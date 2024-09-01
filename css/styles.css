@@ -1,3 +1,4 @@
+/* Estilos Gerais */
 body {
     font-family: Arial, sans-serif;
     background-color: #f5f5dc; /* Complementar */
@@ -23,44 +24,38 @@ h1 {
 
 main {
     width: 90%;
-    max-width: 600px;
+    max-width: 800px; /* Aumentado para mais espaço */
     background-color: #ffffff; /* Branco para contraste */
     padding: 20px;
     margin: 20px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     border: 1px solid #c0c0c0; /* Secundária */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-#sugestoes-distribuicao {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #f0f8ff; /* Cor de fundo suave */
-    border-left: 5px solid #cda74b; /* Acento */
-}
-
-#sugestoes-distribuicao h3 {
-    margin-bottom: 10px;
-    color: #003366; /* Primária */
-}
-
-#percentual-despesas, #percentual-metas, #percentual-emergencia {
-    font-size: 1rem;
-    color: #555;
-    margin-top: 10px;
-}
-
+/* Seções */
 section {
+    width: 100%;
+    max-width: 700px; /* Máximo de largura para manter a organização */
     margin-bottom: 30px;
+    padding: 15px;
+    background-color: #ffffff; /* Branco para contraste */
+    border-radius: 8px; /* Bordas arredondadas para suavizar */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
 }
 
 h2 {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     color: #003366; /* Primária */
 }
 
+/* Formulários */
 form {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap; /* Permite que os elementos se movam para a linha seguinte em telas pequenas */
     margin-bottom: 10px;
 }
 
@@ -70,6 +65,7 @@ input {
     flex: 1;
     border: 1px solid #c0c0c0; /* Secundária */
     background-color: #f5f5dc; /* Complementar */
+    border-radius: 4px; /* Bordas arredondadas */
 }
 
 button {
@@ -79,12 +75,14 @@ button {
     border: none;
     cursor: pointer;
     font-size: 1rem;
+    border-radius: 4px; /* Bordas arredondadas */
 }
 
 button:hover {
     background-color: #c0c0c0; /* Secundária para hover */
 }
 
+/* Listas */
 ul {
     list-style-type: none;
     padding: 0;
@@ -97,40 +95,82 @@ li {
     border-left: 5px solid #cda74b; /* Acento */
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    border-radius: 4px; /* Bordas arredondadas */
 }
 
+.delete-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 4px; /* Bordas arredondadas */
+}
+
+.delete-button:hover {
+    background-color: #c0392b; /* Escurece o vermelho no hover */
+}
+
+/* Percentuais */
+#percentual-despesas, #percentual-metas, #percentual-emergencia {
+    font-size: 1rem;
+    color: #555;
+    margin-top: 10px;
+}
+
+/* Fundo de Emergência */
 #total-emergencia {
     font-size: 1.2rem;
     font-weight: bold;
     color: #003366; /* Primária */
 }
 
-/* Adicione o estilo para a nova seção de Lazer */
-#lazer {
-    margin-top: 20px;
+/* Seção de Botões */
+#botoes {
+    position: fixed;
+    right: 0;
+    top: 20%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    background-color: #ffffff;
+    border-left: 1px solid #c0c0c0;
+    border-radius: 8px; /* Bordas arredondadas */
 }
 
-#lazer input, #lazer button {
-    margin-right: 10px;
-}
-
-#lista-lazer {
-    margin-top: 10px;
-}
-
-#lista-lazer li {
-    margin-bottom: 5px;
-}
-
-.delete-button {
-    margin-left: 10px;
-    background-color: #e74c3c;
+#botoes button {
+    padding: 10px;
+    background-color: #cda74b; /* Cor de acento */
     color: white;
     border: none;
-    padding: 5px;
     cursor: pointer;
+    font-size: 1rem;
+    border-radius: 4px; /* Bordas arredondadas */
 }
 
+#botoes button:hover {
+    background-color: #c0c0c0; /* Cor secundária para hover */
+}
+
+/* Adicionando estilo para o botão de voltar ao topo */
+#voltar-topo {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#voltar-topo:hover {
+    background-color: #0056b3;
+}
+
+
+/* Rodapé */
 footer {
     background-color: #003366; /* Cor de fundo primária */
     color: #f5f5dc; /* Cor complementar para o texto */
@@ -166,4 +206,32 @@ footer p {
 
 .footer-content span {
     color: #f5f5dc; /* Separador de links */
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    header, footer {
+        padding: 15px;
+    }
+
+    main {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
+
+    button {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    input {
+        font-size: 0.9rem;
+    }
 }
