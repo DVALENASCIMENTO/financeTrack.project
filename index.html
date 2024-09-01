@@ -13,86 +13,77 @@
     </header>
 
     <main>
-        <!-- Campo para inserir o salário total -->
         <section id="salario">
             <h2>Salário Total</h2>
             <form id="form-salario">
                 <input type="number" id="salario-total" placeholder="Salário Total (R$)" required>
-                <button type="submit">Definir Salário</button>
+                <button type="submit">Definir</button>
             </form>
         </section>
 
-        <!-- Sugestões de distribuição financeira -->
         <div id="sugestoes-distribuicao" style="display: none;">
             <h3>Sugestões de Distribuição</h3>
             <p id="sugestao-despesas">Despesas: R$ 0.00</p>
             <p id="sugestao-metas">Metas: R$ 0.00</p>
             <p id="sugestao-emergencia">Fundo de Emergência: R$ 0.00</p>
             <p id="sugestao-lazer">Lazer: R$ 0.00</p>
+            <p id="contribuicao-meta">Contribuição sugerida: 0%</p> <!-- Adicionada a contribuição sugerida -->
         </div>
-        
-        <!-- Seção de Despesas -->
+
         <section id="despesas">
             <h2>Despesas</h2>
             <form id="form-despesas">
                 <input type="text" id="descricao-despesa" placeholder="Descrição da Despesa" required>
                 <input type="number" id="valor-despesa" placeholder="Valor (R$)" required>
-                <button type="submit">Adicionar Despesa</button>
+                <button type="submit">Adicionar</button>
             </form>
             <ul id="lista-despesas"></ul>
             <p id="percentual-despesas">Percentual destinado: 0%</p>
         </section>
-    
-        <!-- Seção de Metas -->
+
         <section id="metas">
             <h2>Metas</h2>
             <form id="form-metas">
                 <input type="text" id="descricao-meta" placeholder="Descrição da Meta" required>
                 <input type="number" id="valor-meta" placeholder="Valor (R$)" required>
-                <button type="submit">Adicionar Meta</button>
+                <input type="number" id="periodicidade-meta" placeholder="Periodicidade (meses)" step="1" min="1" required> <!-- Alterado para número e adicionado o campo de periodicidade -->
+                <button type="submit">Adicionar</button>
             </form>
             <ul id="lista-metas"></ul>
             <p id="percentual-metas">Percentual destinado: 0%</p>
         </section>
-    
-        <!-- Seção de Fundo de Emergência -->
+
         <section id="fundo-emergencia">
             <h2>Fundo de Emergência</h2>
             <form id="form-fundo-emergencia">
                 <input type="number" id="valor-emergencia" placeholder="Valor a Depositar (R$)" required>
-                <button type="submit">Adicionar ao Fundo</button>
+                <button type="submit">Adicionar</button>
             </form>
             <p id="total-emergencia">Total no Fundo: R$ 0.00</p>
             <p id="percentual-emergencia">Percentual destinado: 0%</p>
         </section>
 
-        <!-- Seção de Lazer -->
         <section id="lazer">
             <h2>Lazer</h2>
             <form id="form-lazer">
                 <input type="text" id="descricao-lazer" placeholder="Descrição do Lazer" required>
                 <input type="number" id="valor-lazer" placeholder="Valor (R$)" required>
-                <button type="submit">Adicionar Lazer</button>
+                <button type="submit">Adicionar</button>
             </form>
             <ul id="lista-lazer"></ul>
             <p id="percentual-lazer">Percentual destinado: 0%</p>
         </section>
-        
-        <!-- Resultado do resto do salário -->
+
         <section id="resultado">
             <p id="resto-salario">Resto do Salário: R$ 0.00</p>
         </section>
 
-        <!-- Botões de ações -->
         <section id="acoes">
             <button id="limpar-dados">Limpar Dados</button>
             <button id="salvar-pdf">Salvar em PDF</button>
         </section>
-
-        
     </main>
 
-    <!-- Botão voltar ao topo -->
     <button id="voltar-topo" style="position: fixed; bottom: 10px; right: 10px;">&#8679;</button>
 
     <footer>

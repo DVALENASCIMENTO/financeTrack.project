@@ -1,3 +1,6 @@
+// Prefixo para o nome do projeto
+const CHAVE_PROJETO = 'financeTrack';
+
 // Variáveis globais para armazenar os totais
 let totalDespesas = 0;
 let totalMetas = 0;
@@ -29,10 +32,19 @@ function calcularSugestoes() {
     const emergenciaSugestao = salarioTotal * 0.15;
     const lazerSugestao = salarioTotal * 0.15;
 
-    document.getElementById('sugestao-despesas').textContent = `Despesas: R$ ${despesasSugestao.toFixed(2)}`;
-    document.getElementById('sugestao-metas').textContent = `Metas: R$ ${metasSugestao.toFixed(2)}`;
-    document.getElementById('sugestao-emergencia').textContent = `Fundo de Emergência: R$ ${emergenciaSugestao.toFixed(2)}`;
-    document.getElementById('sugestao-lazer').textContent = `Lazer: R$ ${lazerSugestao.toFixed(2)}`;
+    document.getElementById('sugestao-despesas').textContent = `Despesas: R$ ${despesasSugestao.toFixed(2)} (${(50).toFixed(2)}%)`;
+    document.getElementById('sugestao-metas').textContent = `Metas: R$ ${metasSugestao.toFixed(2)} (${(20).toFixed(2)}%)`;
+    document.getElementById('sugestao-emergencia').textContent = `Fundo de Emergência: R$ ${emergenciaSugestao.toFixed(2)} (${(15).toFixed(2)}%)`;
+    document.getElementById('sugestao-lazer').textContent = `Lazer: R$ ${lazerSugestao.toFixed(2)} (${(15).toFixed(2)}%)`;
+}
+
+// Função para calcular a contribuição com base nas metas inseridas
+function calcularContribuicao() {
+    if (salarioTotal <= 0) return;
+
+    const metasSugestao = salarioTotal * 0.20;
+    const contribuicao = (totalMetas / metasSugestao).toFixed(2);
+    document.getElementById('contribuicao-meta').textContent = `Contribuição sugerida: ${(contribuicao * 100).toFixed(2)}%`; // Atualiza o campo de contribuição
 }
 
 // Função para calcular o resto do salário
@@ -40,32 +52,33 @@ function calcularResto() {
     if (salarioTotal <= 0) return;
 
     const resto = salarioTotal - (totalDespesas + totalMetas + fundoTotal + totalLazer);
-
     document.getElementById('resto-salario').textContent = `Resto do Salário: R$ ${resto.toFixed(2)}`;
 }
 
-// Função para salvar e carregar dados do localStorage
+// Função para salvar dados no localStorage
 function salvarDados() {
-    localStorage.setItem('despesas', JSON.stringify(totalDespesas));
-    localStorage.setItem('metas', JSON.stringify(totalMetas));
-    localStorage.setItem('fundoEmergencia', JSON.stringify(fundoTotal));
-    localStorage.setItem('lazer', JSON.stringify(totalLazer));
-    localStorage.setItem('salarioTotal', JSON.stringify(salarioTotal));
+    localStorage.setItem(`${CHAVE_PROJETO}-despesas`, JSON.stringify(totalDespesas));
+    localStorage.setItem(`${CHAVE_PROJETO}-metas`, JSON.stringify(totalMetas));
+    localStorage.setItem(`${CHAVE_PROJETO}-fundoEmergencia`, JSON.stringify(fundoTotal));
+    localStorage.setItem(`${CHAVE_PROJETO}-lazer`, JSON.stringify(totalLazer));
+    localStorage.setItem(`${CHAVE_PROJETO}-salarioTotal`, JSON.stringify(salarioTotal));
 }
 
+// Função para carregar dados do localStorage
 function carregarDados() {
-    totalDespesas = JSON.parse(localStorage.getItem('despesas')) || 0;
-    totalMetas = JSON.parse(localStorage.getItem('metas')) || 0;
-    fundoTotal = JSON.parse(localStorage.getItem('fundoEmergencia')) || 0;
-    totalLazer = JSON.parse(localStorage.getItem('lazer')) || 0;
-    salarioTotal = JSON.parse(localStorage.getItem('salarioTotal')) || 0;
+    totalDespesas = JSON.parse(localStorage.getItem(`${CHAVE_PROJETO}-despesas`)) || 0;
+    totalMetas = JSON.parse(localStorage.getItem(`${CHAVE_PROJETO}-metas`)) || 0;
+    fundoTotal = JSON.parse(localStorage.getItem(`${CHAVE_PROJETO}-fundoEmergencia`)) || 0;
+    totalLazer = JSON.parse(localStorage.getItem(`${CHAVE_PROJETO}-lazer`)) || 0;
+    salarioTotal = JSON.parse(localStorage.getItem(`${CHAVE_PROJETO}-salarioTotal`)) || 0;
 
     document.getElementById('total-emergencia').textContent = `Total no Fundo: R$ ${fundoTotal.toFixed(2)}`;
     atualizarPercentuais();
-    calcularResto(); // Atualizar o resto ao carregar os dados
+    calcularResto();
+    calcularSugestoes(); // Atualizar sugestões ao carregar os dados
 }
 
-// Funções para lidar com o formulário e listas
+// Função para lidar com o formulário de salário
 document.getElementById('form-salario').addEventListener('submit', (e) => {
     e.preventDefault();
     salarioTotal = parseFloat(document.getElementById('salario-total').value);
@@ -75,12 +88,13 @@ document.getElementById('form-salario').addEventListener('submit', (e) => {
     salvarDados();
 });
 
+// Função para lidar com o formulário de despesas
 document.getElementById('form-despesas').addEventListener('submit', (e) => {
     e.preventDefault();
     const descricao = document.getElementById('descricao-despesa').value;
     const valor = parseFloat(document.getElementById('valor-despesa').value);
     totalDespesas += valor;
-    
+
     const item = document.createElement('li');
     item.textContent = `${descricao}: R$ ${valor.toFixed(2)}`;
     document.getElementById('lista-despesas').appendChild(item);
@@ -93,29 +107,46 @@ document.getElementById('form-despesas').addEventListener('submit', (e) => {
     salvarDados();
 });
 
+// Função para lidar com o formulário de metas
 document.getElementById('form-metas').addEventListener('submit', (e) => {
     e.preventDefault();
     const descricao = document.getElementById('descricao-meta').value;
     const valor = parseFloat(document.getElementById('valor-meta').value);
-    totalMetas += valor;
+    const periodicidade = parseFloat(document.getElementById('periodicidade-meta').value); // Nova linha para periodicidade
     
+    // Verificar se o total de metas não ultrapassa 20% do salário
+    const metasSugestao = salarioTotal * 0.20;
+    if (totalMetas + valor > metasSugestao) {
+        alert(`A soma das metas não pode ultrapassar R$ ${metasSugestao.toFixed(2)}.`);
+        return;
+    }
+
+    totalMetas += valor;
+
+    // Calcular a contribuição com base na periodicidade
+    const contribuicao = (valor / periodicidade).toFixed(2);
     const item = document.createElement('li');
-    item.textContent = `${descricao}: R$ ${valor.toFixed(2)}`;
+    item.textContent = `${descricao}: R$ ${valor.toFixed(2)} (Contribuição: R$ ${contribuicao})`;
     document.getElementById('lista-metas').appendChild(item);
 
     document.getElementById('descricao-meta').value = '';
     document.getElementById('valor-meta').value = '';
+    document.getElementById('periodicidade-meta').value = ''; // Limpar o campo de periodicidade
 
     atualizarPercentuais();
     calcularResto();
     salvarDados();
+
+    // Atualizar a contribuição ao adicionar uma nova meta
+    calcularContribuicao();
 });
 
+// Função para lidar com o formulário de fundo de emergência
 document.getElementById('form-fundo-emergencia').addEventListener('submit', (e) => {
     e.preventDefault();
     const valor = parseFloat(document.getElementById('valor-emergencia').value);
     fundoTotal += valor;
-    
+
     document.getElementById('total-emergencia').textContent = `Total no Fundo: R$ ${fundoTotal.toFixed(2)}`;
     document.getElementById('valor-emergencia').value = '';
 
@@ -124,12 +155,13 @@ document.getElementById('form-fundo-emergencia').addEventListener('submit', (e) 
     salvarDados();
 });
 
+// Função para lidar com o formulário de lazer
 document.getElementById('form-lazer').addEventListener('submit', (e) => {
     e.preventDefault();
     const descricao = document.getElementById('descricao-lazer').value;
     const valor = parseFloat(document.getElementById('valor-lazer').value);
     totalLazer += valor;
-    
+
     const item = document.createElement('li');
     item.textContent = `${descricao}: R$ ${valor.toFixed(2)}`;
     document.getElementById('lista-lazer').appendChild(item);
@@ -142,79 +174,5 @@ document.getElementById('form-lazer').addEventListener('submit', (e) => {
     salvarDados();
 });
 
-// Função para limpar dados
-document.getElementById('limpar-dados').addEventListener('click', () => {
-    localStorage.clear();
-    totalDespesas = 0;
-    totalMetas = 0;
-    fundoTotal = 0;
-    totalLazer = 0;
-    salarioTotal = 0;
-
-    document.getElementById('lista-despesas').innerHTML = '';
-    document.getElementById('lista-metas').innerHTML = '';
-    document.getElementById('lista-lazer').innerHTML = '';
-    document.getElementById('total-emergencia').textContent = 'Total no Fundo: R$ 0.00';
-    document.getElementById('resto-salario').textContent = 'Resto do Salário: R$ 0.00';
-    document.getElementById('percentual-despesas').textContent = 'Percentual destinado a Despesas: 0.00%';
-    document.getElementById('percentual-metas').textContent = 'Percentual destinado a Metas: 0.00%';
-    document.getElementById('percentual-emergencia').textContent = 'Percentual destinado ao Fundo de Emergência: 0.00%';
-    document.getElementById('percentual-lazer').textContent = 'Percentual destinado a Lazer: 0.00%';
-    document.getElementById('sugestoes-distribuicao').style.display = 'none';
-});
-
-// Função para salvar em PDF
-document.getElementById('salvar-pdf').addEventListener('click', () => {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    let yOffset = 10;
-
-    doc.text('Finance Track', 10, yOffset);
-    yOffset += 10;
-    doc.text(`Salário Total: R$ ${salarioTotal.toFixed(2)}`, 10, yOffset);
-    yOffset += 10;
-    doc.text(`Total Despesas: R$ ${totalDespesas.toFixed(2)}`, 10, yOffset);
-    yOffset += 10;
-    doc.text(`Total Metas: R$ ${totalMetas.toFixed(2)}`, 10, yOffset);
-    yOffset += 10;
-    doc.text(`Fundo de Emergência: R$ ${fundoTotal.toFixed(2)}`, 10, yOffset);
-    yOffset += 10;
-    doc.text(`Total Lazer: R$ ${totalLazer.toFixed(2)}`, 10, yOffset);
-    yOffset += 10;
-
-    const despesas = Array.from(document.getElementById('lista-despesas').children);
-    despesas.forEach(item => {
-        doc.text(item.textContent, 10, yOffset);
-        yOffset += 10;
-    });
-
-    const metas = Array.from(document.getElementById('lista-metas').children);
-    metas.forEach(item => {
-        doc.text(item.textContent, 10, yOffset);
-        yOffset += 10;
-    });
-
-    const lazer = Array.from(document.getElementById('lista-lazer').children);
-    lazer.forEach(item => {
-        doc.text(item.textContent, 10, yOffset);
-        yOffset += 10;
-    });
-
-    doc.text(`Percentual destinado a Despesas: ${document.getElementById('percentual-despesas').textContent.split(': ')[1]}`, 10, yOffset);
-    yOffset += 10;
-    doc.text(`Percentual destinado a Metas: ${document.getElementById('percentual-metas').textContent.split(': ')[1]}`, 10, yOffset);
-    yOffset += 10;
-    doc.text(`Percentual destinado ao Fundo de Emergência: ${document.getElementById('percentual-emergencia').textContent.split(': ')[1]}`, 10, yOffset);
-    yOffset += 10;
-    doc.text(`Percentual destinado a Lazer: ${document.getElementById('percentual-lazer').textContent.split(': ')[1]}`, 10, yOffset);
-
-    doc.save('relatorio_financeiro.pdf');
-});
-
-// Função para voltar ao topo
-document.getElementById('voltar-topo').addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
-// Inicialização
-carregarDados();
+// Carregar dados ao iniciar
+window.onload = carregarDados;
